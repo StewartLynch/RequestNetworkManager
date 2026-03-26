@@ -24,4 +24,4 @@ enum TestEndpoint {
     static var userWithHeader = Endpoint(urlString: TestURL.gorestURL, method: .get)
 }
 
-let token = "ebe207fc3363a3ddbace3480a82aae970e5f8e7a7f57ece419f3d205c0d154d6"
+let token = "YOUR KEY GOES HERE WIHIN THESE QUOTES"
