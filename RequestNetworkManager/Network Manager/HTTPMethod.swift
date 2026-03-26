@@ -13,17 +13,12 @@
 //----------------------------------------------
 // Copyright © 2026 CreaTECH Solutions (Stewart Lynch). All rights reserved.
 
-import SwiftUI
+import Foundation
 
-@Observable
-class UsersViewModel {
-    var users: [User] = []
+enum HTTPMethod {
+    case get, post, put, patch, delete
     
-    func fetchUsers() async throws {
-        var endpoint = TestEndpoint.userWithHeader
-        endpoint.addHeader("application/json", forHTTPHeaderField: "Content-Type")
-        endpoint.addHeader("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        users = try await NetworkManager.shared.fetchAndDecodeJSON(from: endpoint)
+    var rawValue: String {
+        String(describing: self).uppercased()
     }
-    
 }

@@ -123,6 +123,43 @@ class NetworkManager {
         
     }
     
+    func fetchAndDecodeJSON<T: Decodable>(
+        from endpoint:Endpoint,
+        configureDecoder: ((JSONDecoder) -> ())? = nil) async throws(NetworkError)-> T {
+            let request = try endpoint.buildRequest()
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    print("Network error: Response was not HTTPURLResponse")
+                    throw NetworkError.httpResponse
+                }
+                guard (200...299).contains(httpResponse.statusCode) else {
+                    print("HTTP error: status code \(httpResponse.statusCode)")
+                    throw NetworkError.httpStatusCode(httpResponse.statusCode)
+                }
+                do {
+                    let decoder = JSONDecoder()
+                    configureDecoder?(decoder)
+                    return try decoder.decode(T.self, from: data)
+                } catch let error as DecodingError {
+                    print(decodingError(error: error))
+                    throw NetworkError.decoding
+                } catch {
+                    print("Decoding error: \(error.localizedDescription)")
+                    print("Data as string: \(String(data: data, encoding: .utf8) ?? "Unable to convert data to String")")
+                    throw NetworkError.decoding
+                }
+            } catch let networkError as NetworkError {
+                throw networkError
+            } catch let urlError as URLError {
+                throw NetworkError.transport(TransportError(urlError: urlError))
+            } catch {
+            print("Request error \(error.localizedDescription)")
+                throw NetworkError.transport(.unknown)
+        }
+        
+    }
+    
     func decodingError(error: DecodingError) -> String {
         switch error {
         case .typeMismatch(let type, let context):

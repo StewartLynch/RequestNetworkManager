@@ -23,7 +23,7 @@ struct Joke2:Identifiable, Codable {
 }
 
 struct JokesView: View {
-    @State private var viewModel = DataViewModel<[Joke2]>(urlString: TestURL.jokesURL) { decoder in
+    @State private var viewModel = DataViewModel<[Joke2]>(endpoint: TestEndpoint.jokesEndpoint) { decoder in
         decoder.dateDecodingStrategy = .iso8601
     }
     var body: some View {

@@ -21,11 +21,11 @@ class DataViewModel<T: Decodable> {
     private let manager = NetworkManager.shared
     var networkError: NetworkError? = nil
     var isLoading = false
-    let urlString: String
+    let endpoint: Endpoint
     private let configurator: ((JSONDecoder) -> Void)?
     
-    init(urlString: String, configurator: ((JSONDecoder) -> Void)? = nil) {
-        self.urlString = urlString
+    init(endpoint: Endpoint, configurator: ((JSONDecoder) -> Void)? = nil) {
+        self.endpoint = endpoint
         self.configurator = configurator
     }
     
@@ -38,9 +38,9 @@ class DataViewModel<T: Decodable> {
         #endif
         do {
             if let configurator {
-                data = try await manager.fetchAndDecodeJSON(from: urlString, configureDecoder: configurator)
+                data = try await manager.fetchAndDecodeJSON(from: endpoint, configureDecoder: configurator)
             } else {
-                data = try await manager.fetchAndDecodeJSON(from: urlString)
+                data = try await manager.fetchAndDecodeJSON(from: endpoint)
             }
         } catch let error {
             networkError = error
