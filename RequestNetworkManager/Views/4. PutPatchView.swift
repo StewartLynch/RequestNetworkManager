@@ -42,6 +42,13 @@ struct PutPatchView: View {
         .sheet(item: $selectedUser) { user in
             CreateUserSheetView(user: user)
         }
+        .task {
+            do {
+                try await model.fetchUsers()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 

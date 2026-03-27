@@ -33,6 +33,22 @@ struct DeleteView: View {
                 }
                 .strikethrough(user.status == .inactive)
             }
+            .onDelete { offsets in
+                Task {
+                    do {
+                        try await model.deleteUsers(at: offsets)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+        }
+        .task {
+            do {
+                try await model.fetchUsers()
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }

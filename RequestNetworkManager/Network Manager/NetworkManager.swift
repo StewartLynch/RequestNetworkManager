@@ -127,6 +127,48 @@ class NetworkManager {
         from endpoint:Endpoint,
         configureDecoder: ((JSONDecoder) -> ())? = nil) async throws(NetworkError)-> T {
             let request = try endpoint.buildRequest()
+            return try await executedAndDecodeJSON(from: request, configureDecoder: configureDecoder)
+    }
+    
+    func sendJSONAndDecodeResponse<T: Decodable, Payload: Encodable>(
+        from endPoint:Endpoint,
+        payload: Payload,
+        configureDecoder: ((JSONDecoder) -> ())? = nil) async throws(NetworkError)-> T {
+            var request = try endPoint.buildRequest()
+            guard let encodedPayload = try? JSONEncoder().encode(payload) else {
+                throw NetworkError.decoding
+            }
+            request.httpBody = encodedPayload
+            return try await executedAndDecodeJSON(from: request, configureDecoder: configureDecoder)
+        }
+    
+    func sendRequest(
+        from endpoint: Endpoint
+    ) async throws(NetworkError) {
+        let request = try endpoint.buildRequest()
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("Network error: Response was not HTTPURLResponse")
+                throw NetworkError.httpResponse
+            }
+            guard (200...299).contains(httpResponse.statusCode) else {
+                print("HTTP error: status code \(httpResponse.statusCode)")
+                throw NetworkError.httpStatusCode(httpResponse.statusCode)
+            }
+        } catch let networkError as NetworkError {
+            throw networkError
+        } catch let urlError as URLError {
+            throw NetworkError.transport(TransportError(urlError: urlError))
+        } catch {
+            print("Request error \(error.localizedDescription)")
+            throw NetworkError.transport(.unknown)
+        }
+    }
+    
+    func executedAndDecodeJSON<T: Decodable>(
+        from request:URLRequest,
+        configureDecoder: ((JSONDecoder) -> ())? = nil) async throws(NetworkError)-> T {
             do {
                 let (data, response) = try await URLSession.shared.data(for: request)
                 guard let httpResponse = response as? HTTPURLResponse else {
@@ -157,7 +199,6 @@ class NetworkManager {
             print("Request error \(error.localizedDescription)")
                 throw NetworkError.transport(.unknown)
         }
-        
     }
     
     func decodingError(error: DecodingError) -> String {

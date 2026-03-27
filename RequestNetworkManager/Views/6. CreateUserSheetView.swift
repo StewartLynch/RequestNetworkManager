@@ -42,7 +42,9 @@ struct CreateUserSheetView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(submitTitle) {
-                            
+                            Task {
+                                await submit()
+                            }
                         }
                         .disabled(!canSubmit)
                     }
@@ -97,6 +99,34 @@ struct CreateUserSheetView: View {
                     Spacer()
                 }
             }
+        }
+    }
+    
+    private func submit() async {
+        guard canSubmit else { return }
+        isSubmitting = true
+        defer { isSubmitting = false }
+        
+        do {
+            if let user {
+                try await model.updateUserUser(
+                    id: user.id,
+                    name: name,
+                    email: email,
+                    gender: gender,
+                    status: status
+                )
+            } else {
+                try await model.createUser(
+                    name: name,
+                    email: email,
+                    gender: gender,
+                    status: status
+                )
+            }
+            dismiss()
+        } catch let networkError  {
+            errorMessage = networkError.userMessage
         }
     }
 }
