@@ -20,19 +20,23 @@
         {
           "fill-specializations" : [
             {
+              "value" : "none"
+            },
+            {
               "appearance" : "dark",
               "value" : {
                 "solid" : "extended-gray:0.75000,1.00000"
               }
             }
           ],
-          "image-name" : "Image 2.png",
-          "name" : "Image 2",
+          "glass" : true,
+          "image-name" : "5.circle.fill.png",
+          "name" : "5.circle.fill",
           "position" : {
-            "scale" : 2.12,
+            "scale" : 3.17,
             "translation-in-points" : [
-              290.56640625,
-              158.6429687499998
+              292.25640624999994,
+              160.33296874999974
             ]
           }
         }
@@ -43,19 +47,6 @@
       },
       "translucency" : {
         "enabled" : false,
-        "value" : 0.5
-      }
-    },
-    {
-      "layers" : [
-
-      ],
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
-      },
-      "translucency" : {
-        "enabled" : true,
         "value" : 0.5
       }
     }

@@ -1,6 +1,6 @@
-# Request Network Manager - Part 1
+# Request Network Manager - Part 2
 
-![AppIcon128](Images/AppIcon128.png) This is the completed source code for the 4th video in the Network Manager series.
+![AppIcon128](Images/AppIcon128.png) This is the completed source code for the 5th video in the Network Manager series.
 
 </a>
 
