@@ -29,8 +29,8 @@ enum TestEndpoint {
     }
     static func deleteUser(id: Int) -> Endpoint {
         let urlString = "\(TestURL.gorestURL)/\(id)"
-        return Endpoint(urlString: urlString, method: .delete)
+        return Endpoint(urlString: urlString, method: .put)
     }
 }
 
-let token = "2b9fe4f066ac83bae82c80ad19800a85e079ba752eaeaff81f919bdfee3e16c6"
+let token = "YOUR KEY GOES HERE WIHIN THESE QUOTES"
